@@ -1,0 +1,12 @@
+name: build image
+run-name: ${{ github.actor }} start build image
+
+on: 
+  push:
+    branches:
+      - main
+jobs:
+  build-image:
+    runs-on: self-hosted
+    steps:
+      - run: docker buildx bake -f docker-compose.yaml --pull --push --progress plain --no-cache
