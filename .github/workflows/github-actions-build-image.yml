@@ -5,8 +5,16 @@ on:
   push:
     branches:
       - main
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    - cron:  '1 0 0 0 1'
 jobs:
   build-image:
     runs-on: self-hosted
     steps:
-      - run: docker buildx bake -f docker-compose.yaml --pull --push --progress plain --no-cache
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: build mise image
+        run: docker buildx bake -f docker-compose.yaml --pull --push --progress plain --no-cache
+      - name: Clean Up Workspace
+        run: rm -rf ${{ github.workspace }}
