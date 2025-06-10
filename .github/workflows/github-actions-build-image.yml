@@ -2,12 +2,11 @@ name: build image
 run-name: ${{ github.actor }} start build image
 
 on: 
-  push:
-    branches:
-      - main
+  pull_request:
+    branches: [ "main" ]
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '1 0 0 0 1'
+    - cron: '1 0 * * 1'
 jobs:
   build-image:
     runs-on: self-hosted
@@ -16,5 +15,3 @@ jobs:
         uses: actions/checkout@v4
       - name: build mise image
         run: docker buildx bake -f docker-compose.yaml --pull --push --progress plain --no-cache
-      - name: Clean Up Workspace
-        run: rm -rf ${{ github.workspace }}
