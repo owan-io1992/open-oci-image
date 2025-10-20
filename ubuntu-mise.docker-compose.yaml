@@ -1,10 +1,8 @@
-version: '3'
-
 services:
   24.04-mise:
     build:
       context: ubuntu-mise/
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
       args:
         - UBUNTU_VERSION=24.04
       x-bake:
@@ -16,7 +14,7 @@ services:
   22.04-mise:
     build:
       context: ubuntu-mise/
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
       args:
         - UBUNTU_VERSION=22.04
       x-bake:
