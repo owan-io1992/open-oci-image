@@ -57,7 +57,7 @@ jobs:
         if: steps.check_versions.outputs.updates_available == 'true'
         uses: peter-evans/create-pull-request@v7
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           commit-message: "chore(deps): update dependencies"
           title: "chore(deps): update dependencies"
           body: |
