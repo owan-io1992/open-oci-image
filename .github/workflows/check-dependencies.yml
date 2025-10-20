@@ -68,4 +68,3 @@ jobs:
           delete-branch: true
           base: main
           signoff: true
-          reviewers: owanio1992
