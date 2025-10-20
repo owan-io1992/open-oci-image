@@ -1,0 +1,16 @@
+services:
+  argocd-repo-server:
+    build:
+      context: argocd-repo-server/
+      dockerfile: dockerfile
+      args:
+        - ARGOCD_VERSION
+        - SOPS_VERSION
+        - HELM_SECRETS_VERSION
+        - KUBECTL_VERSION
+      x-bake:
+        platforms:
+          - "linux/amd64"
+          - "linux/arm64"
+        tags:
+          - "${REPOSITORIES}/argocd-repo-server:${ARGOCD_VERSION}"

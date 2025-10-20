@@ -1,0 +1,52 @@
+# syntax=docker/dockerfile:1
+
+ARG ARGOCD_VERSION
+FROM quay.io/argoproj/argocd:$ARGOCD_VERSION
+
+# https://github.com/getsops/sops
+ARG SOPS_VERSION
+# https://github.com/jkroepke/helm-secrets
+ARG HELM_SECRETS_VERSION
+# https://kubernetes.io/releases/
+ARG KUBECTL_VERSION
+
+ARG TARGETARCH
+# vals or sops
+ENV HELM_SECRETS_BACKEND="sops" \
+    HELM_SECRETS_HELM_PATH=/usr/local/bin/helm \
+    HELM_PLUGINS="/home/argocd/.local/share/helm/plugins/" \
+    HELM_SECRETS_VALUES_ALLOW_SYMLINKS=false \
+    HELM_SECRETS_VALUES_ALLOW_ABSOLUTE_PATH=false \
+    HELM_SECRETS_VALUES_ALLOW_PATH_TRAVERSAL=false \
+    HELM_SECRETS_WRAPPER_ENABLED=false \
+    HELM_PLUGINS=/gitops-tools/helm-plugins/ \
+    HELM_SECRETS_CURL_PATH=/gitops-tools/curl \
+    HELM_SECRETS_SOPS_PATH=/gitops-tools/sops \
+    HELM_SECRETS_KUBECTL_PATH=/gitops-tools/kubectl \
+    PATH="$PATH:/gitops-tools"
+
+USER root
+RUN apt-get update && \
+    apt-get install -y \
+    wget && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+RUN mkdir -p /gitops-tools/helm-plugins
+
+# kubectl
+RUN wget -O /gitops-tools/kubectl https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${TARGETARCH}/kubectl \
+    && chmod +x /gitops-tools/kubectl
+
+# sops
+RUN wget -O /gitops-tools/sops https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${TARGETARCH} \
+    && chmod +x /gitops-tools/sops
+
+# helm secert
+RUN \
+    wget -qO- "https://github.com/jkroepke/helm-secrets/releases/download/${HELM_SECRETS_VERSION}/helm-secrets.tar.gz" | tar -C /gitops-tools/helm-plugins -xzf- && \
+    true
+
+RUN chmod +x /gitops-tools/* && ln -sf /gitops-tools/helm-plugins/helm-secrets/scripts/wrapper/helm.sh /usr/local/sbin/helm
+
+USER 999
