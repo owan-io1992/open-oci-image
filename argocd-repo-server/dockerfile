@@ -39,7 +39,7 @@ RUN wget -O /gitops-tools/kubectl https://dl.k8s.io/release/${KUBECTL_VERSION}/b
     && chmod +x /gitops-tools/kubectl
 
 # sops
-RUN wget -O /gitops-tools/sops https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-v${SOPS_VERSION}.linux.${TARGETARCH} \
+RUN wget -O /gitops-tools/sops https://github.com/getsops/sops/releases/download/${SOPS_VERSION}/sops-${SOPS_VERSION}.linux.${TARGETARCH} \
     && chmod +x /gitops-tools/sops
 
 # helm secert
