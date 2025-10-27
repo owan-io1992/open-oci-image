@@ -5,7 +5,7 @@ on:
   #   branches: [ "main" ]
   workflow_dispatch:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: "0 0 * * *"
 
 jobs:
   check-dependencies:
@@ -22,20 +22,20 @@ jobs:
         shell: bash
         run: |
           set -e
-          
+
           # Read local versions from .env file
           source .env
-          
+
           echo "Current SOPS_VERSION: ${SOPS_VERSION}"
           echo "Current HELM_SECRETS_VERSION: ${HELM_SECRETS_VERSION}"
-          
+
           # Get latest versions from GitHub
           LATEST_SOPS_VERSION=$(curl -s "https://api.github.com/repos/getsops/sops/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
           LATEST_HELM_SECRETS_VERSION=$(curl -s "https://api.github.com/repos/jkroepke/helm-secrets/releases/latest" | grep -Po '"tag_name": "\K.*?(?=")')
-          
+
           echo "Latest SOPS_VERSION: ${LATEST_SOPS_VERSION}"
           echo "Latest HELM_SECRETS_VERSION: ${LATEST_HELM_SECRETS_VERSION}"
-          
+
           # Compare versions and set outputs
           if [ "${SOPS_VERSION}" != "${LATEST_SOPS_VERSION}" ] || [ "${HELM_SECRETS_VERSION}" != "${LATEST_HELM_SECRETS_VERSION}" ]; then
             echo "updates_available=true" >> $GITHUB_OUTPUT
