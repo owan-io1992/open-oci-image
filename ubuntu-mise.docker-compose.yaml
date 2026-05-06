@@ -1,4 +1,17 @@
 services:
+  26.04-mise:
+    build:
+      context: ubuntu-mise/
+      dockerfile: dockerfile
+      args:
+        - UBUNTU_VERSION=26.04
+      x-bake:
+        platforms:
+          - "linux/amd64"
+          - "linux/arm64"
+        tags:
+          - "${REPOSITORIES}/ubuntu-mise:26.04"
+
   24.04-mise:
     build:
       context: ubuntu-mise/
