@@ -11,3 +11,4 @@ USER ubuntu
 RUN curl -fsSL https://mise.jdx.dev/install.sh | sh
 RUN echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
 RUN echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.profile
+ENTRYPOINT ["/bin/bash", "--login", "-c"]
