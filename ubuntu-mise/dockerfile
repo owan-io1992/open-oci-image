@@ -3,7 +3,7 @@ FROM ubuntu:${UBUNTU_VERSION}
 
 USER root
 RUN useradd -rm -d /home/ubuntu -s /bin/bash -U -G sudo ubuntu || true
-RUN apt update && apt install -y curl git
+RUN apt update && apt install -y curl git rsync openssh-client
 RUN echo "StrictHostKeyChecking no" | tee -a /etc/ssh/ssh_config
 
 USER ubuntu
