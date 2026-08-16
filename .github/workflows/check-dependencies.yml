@@ -4,8 +4,8 @@ on:
   # pull_request:
   #   branches: [ "main" ]
   workflow_dispatch:
-  schedule:
-    - cron: "0 0 * * *"
+  # schedule:
+  #   - cron: "0 0 * * *"
 
 jobs:
   check-dependencies:
@@ -21,7 +21,7 @@ jobs:
         id: check_versions
         shell: bash
         run: |
-          set -e
+          set -xe
 
           # Read local versions from .env file
           source .env
