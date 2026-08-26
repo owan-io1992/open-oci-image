@@ -4,7 +4,7 @@ FROM ubuntu:${UBUNTU_VERSION}
 USER root
 RUN useradd -rm -d /home/ubuntu -s /bin/bash -U -G sudo ubuntu || true
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends curl git rsync openssh-client && \
+    apt-get install -y curl git rsync openssh-client ca-certificates && \
     dpkg --configure -a || true
 RUN echo "StrictHostKeyChecking no" | tee -a /etc/ssh/ssh_config
 
