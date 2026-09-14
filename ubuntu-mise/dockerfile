@@ -16,4 +16,3 @@ RUN curl https://mise.run | MISE_INSTALL_PATH=~/.local/bin/mise sh
 # Installs mise and adds activation to ~/.bashrc
 RUN echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.bashrc
 RUN echo 'eval "$(~/.local/bin/mise activate bash)"' >> ~/.profile
-ENTRYPOINT ["/bin/bash", "--login", "-c"]
