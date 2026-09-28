@@ -69,7 +69,83 @@ spec:
 
 ## Build Process
 
+### Automated Build (CI/CD)
+
 The image is built weekly via a GitHub Actions workflow. The workflow checks for the latest Argo CD release. If a new release is found, it builds and pushes a new image to Docker Hub, tagged with the corresponding Argo CD version.
+
+### Manual Build (Local)
+
+You can manually build the container images using either `docker buildx bake` (recommended, matching CI/CD) or standard `docker build`.
+
+#### 1. Configuration (`.env`)
+
+Configure your target registry / repository name and version arguments in the [`.env`](file://.env) file:
+
+```dotenv
+REPOSITORIES=owanio1992
+
+# argocd
+ARGOCD_VERSION=v3.5.3
+SOPS_VERSION=v3.13.0
+HELM_SECRETS_VERSION=v4.7.6
+KUBECTL_VERSION=v1.35.3
+```
+
+#### 2. Using `docker buildx bake` (Multi-platform & Compose support)
+
+Ensure Buildx is initialized if building multi-platform images (`linux/amd64`, `linux/arm64`):
+
+```bash
+docker buildx create --use --name multi-builder || docker buildx use multi-builder
+```
+
+- **Build and load into local Docker daemon** (Single platform, e.g. current architecture):
+  ```bash
+  # Build argocd-repo-server
+  docker buildx bake -f argocd-repo-server.docker-compose.yaml --load
+
+  # Build ubuntu-mise
+  docker buildx bake -f ubuntu-mise.docker-compose.yaml --load
+  ```
+
+- **Build and push multi-platform images to registry**:
+  ```bash
+  # Build and push argocd-repo-server
+  docker buildx bake -f argocd-repo-server.docker-compose.yaml --push
+
+  # Build and push ubuntu-mise
+  docker buildx bake -f ubuntu-mise.docker-compose.yaml --push
+  ```
+
+- **Override versions on the fly**:
+  ```bash
+  ARGOCD_VERSION=v2.11.2 docker buildx bake -f argocd-repo-server.docker-compose.yaml --load
+  ```
+
+#### 3. Using Standard `docker build`
+
+If you prefer using standard `docker build` directly:
+
+- **argocd-repo-server**:
+  ```bash
+  docker build \
+    --build-arg ARGOCD_VERSION=v3.5.3 \
+    --build-arg SOPS_VERSION=v3.13.0 \
+    --build-arg HELM_SECRETS_VERSION=v4.7.6 \
+    --build-arg KUBECTL_VERSION=v1.35.3 \
+    -t owanio1992/argocd-repo-server:v3.5.3 \
+    -f argocd-repo-server/dockerfile \
+    argocd-repo-server/
+  ```
+
+- **ubuntu-mise**:
+  ```bash
+  docker build \
+    --build-arg UBUNTU_VERSION=24.04 \
+    -t owanio1992/ubuntu-mise:24.04 \
+    -f ubuntu-mise/dockerfile \
+    ubuntu-mise/
+  ```
 
 ## Read More
 
